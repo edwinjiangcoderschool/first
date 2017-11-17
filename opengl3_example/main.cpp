@@ -8,11 +8,45 @@
 #include <stdio.h>
 #include <GL/gl3w.h>    // This example is using gl3w to access OpenGL functions (because it is small). You may use glew/glad/glLoadGen/etc. whatever already works for you.
 #include <GLFW/glfw3.h>
+#include <vector>
+#include <algorithm>
+#include  <cctype>
+#include <string>
 
 static void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error %d: %s\n", error, description);
 }
+
+void toLowerCaseSTD(std::string &str)
+{
+	std::transform(str.begin(), str.end(), str.begin(), std::tolower);
+}
+
+class c_players
+{
+public:
+	int score_west_coast;
+	int score_east_coast ;
+	int score_north ;
+	int score_south ;
+	int score_mid_west ;
+	int total_score ;
+	int correct_answers;
+	int incorrect_answers;
+
+	c_players()
+	{
+		score_west_coast = 0;
+		score_east_coast = 0;
+		score_north = 0;
+		score_south = 0;
+		score_mid_west = 0;
+		total_score = 0;
+		correct_answers = 0;
+		incorrect_answers = 0;
+	}
+};
 
 int main(int, char**)
 {
@@ -61,36 +95,145 @@ int main(int, char**)
         // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
         // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
         // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+		//yyvytvytvuyfvghuj
         glfwPollEvents();
         ImGui_ImplGlfwGL3_NewFrame();
 
-        // 1. Show a simple window.
-        // Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets appears in a window automatically called "Debug".
-        {
-            static float f = 0.0f;
-            ImGui::Text("Hello, world!");
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-            ImGui::ColorEdit3("clear color", (float*)&clear_color);
-            if (ImGui::Button("Test Window")) show_test_window ^= 1;
-            if (ImGui::Button("Another Window")) show_another_window ^= 1;
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        }
+		static int current_selected = -1;
+		int correct = 0, incorrect = 0;
+		char buffer[15];
+		int players;
+		static bool main_open = true;
+		static bool once = false;
+		std::vector<int> arrayplayers = {};
+		std::vector<c_players> amount_of_players;
+		int players_2 = 0;
+		char answer1[10];
+		char answer2[10];
 
-        // 2. Show another simple window. In most cases you will use an explicit Begin/End pair to name the window.
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Window", &show_another_window);
-            ImGui::Text("Hello from another window!");
-            ImGui::End();
-        }
+		char question3[20];
+		char question4[20];
 
-        // 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow().
-        if (show_test_window)
-        {
-            ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
-            ImGui::ShowTestWindow(&show_test_window);
-        }
+		ImGui::Begin("Questions Game", &main_open, ImVec2{510, 50});
+		{
+			ImGui::InputInt("Number of Players", &players);
 
+			if (!once)
+			{
+				players = 0;
+				once = true;
+			}
+
+			if (players <= 0)
+				players = 1;
+
+			if (ImGui::Button("East Coast", ImVec2(100, 20)))
+				current_selected = 0;
+			ImGui::SameLine();
+			if (ImGui::Button("West Coast", ImVec2(100, 20)))
+				current_selected = 1;
+			ImGui::SameLine();
+			if (ImGui::Button("North", ImVec2(100, 20)))
+				current_selected = 2;
+			ImGui::SameLine();
+			if (ImGui::Button("South", ImVec2(100, 20)))
+				current_selected = 3;
+			ImGui::SameLine();
+			if (ImGui::Button("Midwest", ImVec2(100, 20)))
+				current_selected = 4;
+
+			/*if (check1)
+			{
+				ImGui::InputText("Which state is the Statue of Liberty located in?", buffer, sizeof(buffer));
+			}
+
+			/*ImGui::InputText("Which country is the United States south of?", buffer, sizeof(buffer));
+
+			int check = 0;
+
+			for (size_t c = 0; c <= sizeof(buffer); c++)
+			{
+				std::string str = "Canada";
+
+				if (buffer[c] == str[c])
+					check++;
+			}
+
+			if (check == 7)
+				ImGui::Text("Correct");
+			else
+				ImGui::Text("Incorrect");		*/	
+			players_2 = players;
+
+			for (int i = 0; i < players_2;)
+			{
+				c_players* player = new c_players();
+				amount_of_players.push_back(*player);
+				players_2--;
+			}
+
+			
+			ImGui::Text("players in object = %i", (int)amount_of_players.size());
+			ImGui::Text("Players = %i", players);
+			
+			
+		}
+
+		static bool open = true;
+
+		ImGui::End();
+
+		switch (current_selected)
+		{
+		case 0:
+		{
+			ImGui::Begin("East Coast", &open, ImVec2{400, 400});
+			
+
+			ImGui::InputText("What city is the Statue of Liberty located in?", answer1, sizeof(answer1));
+			ImGui::InputText("What is the city that has central park?", answer2, sizeof(answer2));
+
+			for (auto c = 0; c <= 2; c++)
+			{
+			}
+
+		
+
+			ImGui::End();
+
+			break;
+		}
+		case 1:
+		{
+			ImGui::Begin("West Coast", &open, ImVec2{ 400, 400 });
+
+			ImGui::End();
+			break;
+		}
+		case 2:
+		{
+			ImGui::Begin("North", &open, ImVec2{ 400, 400 });
+			ImGui::End();
+			break;
+		}
+		case 3:
+		{
+			ImGui::Begin("South", &open, ImVec2{ 400, 400 });
+			ImGui::End();
+			break;
+		}
+		case 4:
+		{
+			ImGui::Begin("Mid West", &open, ImVec2{ 400, 400 });
+			ImGui::End();
+			break;
+		}
+		default:
+			break;
+		}
+
+	
+		
         // Rendering
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
